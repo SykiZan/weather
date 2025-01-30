@@ -1,6 +1,4 @@
 "use client";
-
-import axios from "axios";
 import { Box, Typography, CircularProgress, Grid2 } from "@mui/material";
 import {
   WiDaySunny,
@@ -9,19 +7,9 @@ import {
   WiHumidity,
   WiStrongWind,
 } from "weather-icons-react";
-import React, { useState, useEffect, createContext, useContext } from "react";
+import React, { useContext } from "react";
 import { WiSnow } from "react-icons/wi";
-
-interface WeatherData {
-  name: string;
-  main: {
-    temp: number;
-    feels_like: number;
-    humidity: number;
-  };
-  weather: { main: string }[];
-  wind: { speed: number };
-}
+import { WeatherContext } from "./WeatherProvider";
 
 interface ForecastData {
   dt: number;
@@ -31,66 +19,6 @@ interface ForecastData {
   };
 }
 
-interface WeatherContextType {
-  weather: WeatherData | null;
-  forecast: ForecastData[] | null;
-  loading: boolean;
-  error: string | null;
-  setLocation: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const WeatherContext = createContext<WeatherContextType | null>(null);
-
-export const WeatherProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [forecast, setForecast] = useState<ForecastData[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [location, setLocation] = useState<string>("New York");
-
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        setLoading(true);
-        const API_KEY = "e31da34c164ec6814d65785d97406592";
-        const lat = 40.7128;
-        const lon = -74.006;
-
-        const weatherResponse = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
-        );
-        const forecastResponse = await axios.get(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
-        );
-
-        setWeather(weatherResponse.data);
-        setForecast(
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error
-          forecastResponse.data.list.filter((_, index) => index % 8 === 0)
-        );
-      } catch {
-        setError("Failed to fetch weather data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWeather();
-  }, [location]);
-
-  return (
-    <WeatherContext.Provider
-      value={{ weather, forecast, loading, error, setLocation }}
-    >
-      {children}
-    </WeatherContext.Provider>
-  );
-};
 
 type ForecastDataWithPlaceholder =
   | ForecastData
