@@ -22,8 +22,8 @@ export default function App() {
         >
           This widget is flexible
         </div>
-        {screenDimentions.width >= 550 && <WeatherWidget size="large" />}
-        {screenDimentions.width < 550 && screenDimentions.width >= 300 && (
+        {screenDimentions.width >= 700 && <WeatherWidget size="large" />}
+        {screenDimentions.width < 700 && screenDimentions.width >= 300 && (
           <WeatherWidget size="medium" />
         )}
         {screenDimentions.width < 300 && <WeatherWidget size="small" />}
