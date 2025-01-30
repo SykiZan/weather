@@ -10,6 +10,7 @@ import {
   WiStrongWind,
 } from "weather-icons-react";
 import React, { useState, useEffect, createContext, useContext } from "react";
+import { WiSnow } from "react-icons/wi";
 
 interface WeatherData {
   name: string;
@@ -125,6 +126,9 @@ export const WeatherWidget = ({ size = "medium" }) => {
         {weather?.weather[0]?.main === "Rain" && (
           <WiRain size={50} color="#4682B4" />
         )}
+        {weather?.weather[0]?.main === "Snow" && (
+          <WiSnow size={50} color="#ADD8E6" />
+        )}
       </Box>
       {size !== "small" && (
         <>
@@ -139,6 +143,7 @@ export const WeatherWidget = ({ size = "medium" }) => {
           </Typography>
         </>
       )}
+
       {size === "large" && (
         <Box overflow="auto" width="100%">
           <Grid2
@@ -151,7 +156,12 @@ export const WeatherWidget = ({ size = "medium" }) => {
           >
             {forecast?.map((day: ForecastData, index: number) => (
               <Grid2 key={index} sx={{ flex: "0 0 auto" }} component="div">
-                <Box p={2} bgcolor="#334155" borderRadius={2}>
+                <Box
+                  p={2}
+                  bgcolor="#334155"
+                  borderRadius={2}
+                  sx={{ minHeight: 150 }}
+                >
                   <Typography variant="body2">
                     {new Date(day.dt * 1000).toLocaleDateString("en-US", {
                       weekday: "long",
@@ -166,6 +176,15 @@ export const WeatherWidget = ({ size = "medium" }) => {
                   {day.weather[0].main === "Rain" && (
                     <WiRain size={30} color="#4682B4" />
                   )}
+                  {day.weather[0].main === "Snow" && (
+                    <WiSnow size={30} color="#ADD8E6" />
+                  )}
+                  {!(
+                    day.weather[0]?.main === "Clear" ||
+                    day.weather[0]?.main === "Clouds" ||
+                    day.weather[0]?.main === "Rain" ||
+                    day.weather[0]?.main === "Snow"
+                  ) && <Box width={30} height={30} bgcolor="transparent" />}
                   <Typography variant="body2">{day.main.temp}°C</Typography>
                 </Box>
               </Grid2>
